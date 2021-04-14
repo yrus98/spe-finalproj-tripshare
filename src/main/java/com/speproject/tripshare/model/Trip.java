@@ -1,5 +1,7 @@
 package com.speproject.tripshare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -13,11 +15,12 @@ public class Trip {
 
     @ManyToOne
     @JoinColumn(name="userId", referencedColumnName = "id")
+    @JsonIgnoreProperties("tripList")
     private User user;
 
     private String destination;
 
-    private String landscape;
+    private Integer landscape; //0 - Any, 1 - Mountain/hills, 2 - Beach, 3 - Snowy region, 4 - Other
 
     private Date tripDate;
 
@@ -37,7 +40,7 @@ public class Trip {
 
     }
 
-    public Trip(User user, String destination, String landscape, Date tripDate, Integer tripLength, Integer tripBudget, Integer groupSize, Integer expectedAgeGroup, Integer expectedGender, String description) {
+    public Trip(User user, String destination, Integer landscape, Date tripDate, Integer tripLength, Integer tripBudget, Integer groupSize, Integer expectedAgeGroup, Integer expectedGender, String description) {
         super();
         this.user = user;
         this.destination = destination;
@@ -75,11 +78,11 @@ public class Trip {
         this.destination = destination;
     }
 
-    public String getLandscape() {
+    public Integer getLandscape() {
         return landscape;
     }
 
-    public void setLandscape(String landscape) {
+    public void setLandscape(Integer landscape) {
         this.landscape = landscape;
     }
 

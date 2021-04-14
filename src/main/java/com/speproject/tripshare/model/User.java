@@ -1,12 +1,15 @@
 package com.speproject.tripshare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name =  "user_2", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name =  "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 	
 	@Id
@@ -20,10 +23,12 @@ public class User {
 	private String lastName;
 	
 	private String email;
-	
+
+	@JsonIgnore
 	private String password;
 
 	@OneToMany(mappedBy = "user")
+	@JsonIgnoreProperties("user")
 	private List<Trip> tripList;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -33,7 +38,7 @@ public class User {
 		            name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(
 				            name = "role_id", referencedColumnName = "id"))
-	
+	@JsonIgnore
 	private Collection<Role> roles;
 	
 	public User() {

@@ -29,6 +29,7 @@ public class User {
 
 	@OneToMany(mappedBy = "user")
 	@JsonIgnoreProperties("user")
+	@OrderBy("tripCreationTimestamp desc")
 	private List<Trip> tripList;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

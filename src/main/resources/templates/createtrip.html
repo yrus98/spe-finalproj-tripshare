@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Create Trip</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<!-- create navigation bar ( header) -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+<!-- Create HTML registration form -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <!-- success message -->
+            <div th:if="${param.success}">
+                <div class="alert alert-info">You've successfully created a trip!</div>
+            </div>
+
+            <h1>Create Trip</h1>
+
+            <form th:action="@{/user/createtrip}" method="post" th:object="${trip}">
+                <div class="form-group">
+                    <label class="control-label" for="destination"> Destination </label>
+                    <input id="destination" class="form-control" th:field="*{destination}"
+                           required autofocus="autofocus" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="landscape"> Landscape </label>
+                    <select id="landscape" th:field="*{landscape}">
+                        <option th:value="0">Any</option>
+                        <option th:value="1">Mountain/Hilly region</option>
+                        <option th:value="2">Beach</option>
+                        <option th:value="3">Snowy region</option>
+                        <option th:value="4">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="tripDate"> Trip Date </label> <input
+                        type="date" id="tripDate" class="form-control" th:field="*{tripDate}"
+                        required autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="tripLength"> Trip Length in Days</label> <input
+                        type="number" min="1" id="tripLength" class="form-control" th:field="*{tripLength}"
+                        required autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="tripBudget"> Trip Budget </label> <input
+                        type="number" min="0" id="tripBudget" class="form-control" th:field="*{tripBudget}" required
+                        autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="groupSize"> Group size </label> <input
+                        type="number" min="2" id="groupSize" class="form-control" th:field="*{groupSize}" required
+                        autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="expectedAgeGroup"> Preferred Age Group </label>
+                    <select id="expectedAgeGroup" th:field="*{expectedAgeGroup}">
+                        <option th:value="0">Any</option>
+                        <option th:value="1">Upto 20 years</option>
+                        <option th:value="2">20-30 years</option>
+                        <option th:value="3">30-40 years</option>
+                        <option th:value="4">40-50 years</option>
+                        <option th:value="5">50+ years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="expectedGender"> Prefered Gender </label>
+                    <select id="expectedGender" th:field="*{expectedGender}">
+                        <option th:value="0">Any</option>
+                        <option th:value="1">Male</option>
+                        <option th:value="2">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="description"> Description </label>
+                    <input id="description" class="form-control" th:field="*{description}"
+                           required autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Create Trip</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

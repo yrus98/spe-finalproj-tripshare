@@ -1,24 +1,9 @@
-package com.speproject.tripshare.model;
+package com.speproject.tripshare.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-@Entity
-@Table(name =  "trip", uniqueConstraints = @UniqueConstraint(columnNames = "tripId"))
-public class Trip {
-
-    @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private Long tripId;
-
-    @ManyToOne
-    @JoinColumn(name="userId", referencedColumnName = "id")
-    @JsonIgnoreProperties("tripList")
-    private User user;
-
+public class TripCreationDto {
     private String destination;
 
     private Integer landscape; //0 - Any, 1 - Mountain/hills, 2 - Beach, 3 - Snowy region, 4 - Other
@@ -37,15 +22,12 @@ public class Trip {
 
     private String description;
 
-    private Timestamp tripCreationTimestamp;
-
-    public Trip() {
+    public TripCreationDto(){
 
     }
 
-    public Trip(User user, String destination, Integer landscape, Date tripDate, Integer tripLength, Integer tripBudget, Integer groupSize, Integer expectedAgeGroup, Integer expectedGender, String description, Timestamp tripCreationTimestamp) {
+    public TripCreationDto(String destination, Integer landscape, Date tripDate, Integer tripLength, Integer tripBudget, Integer groupSize, Integer expectedAgeGroup, Integer expectedGender, String description) {
         super();
-        this.user = user;
         this.destination = destination;
         this.landscape = landscape;
         this.tripDate = tripDate;
@@ -55,23 +37,6 @@ public class Trip {
         this.expectedAgeGroup = expectedAgeGroup;
         this.expectedGender = expectedGender;
         this.description = description;
-        this.tripCreationTimestamp = tripCreationTimestamp;
-    }
-
-    public Long getTripId() {
-        return tripId;
-    }
-
-    public void setTripId(Long tripId) {
-        this.tripId = tripId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getDestination() {
@@ -146,11 +111,5 @@ public class Trip {
         this.description = description;
     }
 
-    public Timestamp getTripCreationTimestamp() {
-        return tripCreationTimestamp;
-    }
 
-    public void setTripCreationTimestamp(Timestamp tripCreationTimestamp) {
-        this.tripCreationTimestamp = tripCreationTimestamp;
-    }
 }

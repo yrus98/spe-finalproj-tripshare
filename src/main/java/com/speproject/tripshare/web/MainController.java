@@ -2,18 +2,14 @@ package com.speproject.tripshare.web;
 
 import com.speproject.tripshare.model.Trip;
 import com.speproject.tripshare.model.User;
-import com.speproject.tripshare.repository.TripRepository;
 import com.speproject.tripshare.repository.UserRepository;
 import com.speproject.tripshare.service.TripService;
 import com.speproject.tripshare.web.dto.TripCreationDto;
-import com.speproject.tripshare.web.dto.UserRegistrationDto;
+import com.speproject.tripshare.web.dto.TripScoreDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,17 +52,25 @@ public class MainController {
 
 	@PostMapping("/user/createtrip")
 	public String submitCreateTrip(@ModelAttribute("trip") TripCreationDto tripCreationDto) {
-		tripService.save(tripCreationDto);
-		return "redirect:/user/createtrip?success";
+		Trip trip = tripService.save(tripCreationDto);
+		return "redirect:/user/matchtrips/" + trip.getTripId();
 	}
 
-	@GetMapping("user/gettrips")
+	@GetMapping("/user/gettrips")
 	@ResponseBody
 	public List<Trip> getUserTrips(Authentication auth){
 		User user = userRepository.findByEmail(auth.getName());
 
-		List<Trip> trips = user.getTripList();
-		return trips;
+		return user.getTripList();
+	}
+
+	@GetMapping("/user/matchtrips/{tripId}")
+	@ResponseBody
+	public List<TripScoreDto> matchUserTrips(@PathVariable Long tripId, Authentication auth){
+		Trip trip = tripService.getTripByTripId(tripId);
+		if(!trip.getUser().getEmail().equals(auth.getName()))
+			return null;
+		return tripService.matchUserTrips(tripId, 0, 10);
 	}
 
 

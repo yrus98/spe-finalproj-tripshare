@@ -56,6 +56,12 @@ public class MainController {
 		return "redirect:/user/matchtrips/" + trip.getTripId();
 	}
 
+	@GetMapping("/user/getdetails")
+	@ResponseBody
+	public User getUserDetails(Authentication auth){
+		return userRepository.findByEmail(auth.getName());
+	}
+
 	@GetMapping("/user/gettrips")
 	@ResponseBody
 	public List<Trip> getUserTrips(Authentication auth){

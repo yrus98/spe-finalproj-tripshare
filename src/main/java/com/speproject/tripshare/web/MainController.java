@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 public class MainController {
 
@@ -22,7 +23,7 @@ public class MainController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@GetMapping("/login")
+	@GetMapping("/ts/login")
 	public String login() {
 		return "login";
 	}

@@ -13,6 +13,11 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.speproject.tripshare.service.UserService;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -43,14 +48,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-			http.csrf().disable()
+			http.cors().and().csrf().disable()
 				.requestCache().disable() // do not preserve original request before redirecting to login page as we will return status code instead of redirect to login page (this is important to disable otherwise session will be created on every request (not containing sessionId/authToken) to non existing endpoint aka curl -i -X GET 'http://localhost:8080/unknown')
 				.authorizeRequests()
-				.antMatchers("/registration**",
+				.antMatchers("/registration/**","/ts/login",
 	                "/js/**",
 	                "/css/**",
 	                "/img/**").permitAll()
-				.anyRequest().hasRole("USER").and()
+				.anyRequest().authenticated().and()
 				.exceptionHandling()
 				.accessDeniedHandler((req, resp, ex) -> resp.setStatus(SC_FORBIDDEN)) // if someone tries to access protected resource but doesn't have enough permissions
 				.authenticationEntryPoint((req, resp, ex) -> resp.setStatus(SC_UNAUTHORIZED)).and() // if someone tries to access protected resource without being authenticated (LoginUrlAuthenticationEntryPoint used by default)
@@ -80,6 +85,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //		.logoutSuccessUrl("/login?logout")
 //		.permitAll();
+	}
+
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 
 }

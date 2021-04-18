@@ -74,7 +74,9 @@ public class TripServiceImpl implements TripService{
 				i++;
 				continue;
 			}
-			tripsWithScores.add(new TripScoreDto(tripRepository.findByTripId(entry.getKey()), entry.getValue()));
+			Trip t = tripRepository.findByTripId(entry.getKey());
+			t.getUser().setPassword("");
+			tripsWithScores.add(new TripScoreDto(t, entry.getValue()));
 			if(i++ >= resultCount)
 				break;
 		}

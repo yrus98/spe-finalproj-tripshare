@@ -1,10 +1,8 @@
 package com.speproject.tripshare.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "role")
@@ -14,13 +12,14 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	@OneToMany(targetEntity = User.class, mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<User> users;
 	
 	public Role() {
 		
 	}
 	
 	public Role(String name) {
-		super();
 		this.name = name;
 	}
 	

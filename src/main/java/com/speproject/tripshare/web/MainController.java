@@ -147,7 +147,7 @@ public class MainController {
     }
 
     @PostMapping("/user/updatedetails")
-    public ResponseEntity registerUserAccount(@ModelAttribute("user") UserProfileDto userProfileDto, Authentication auth) {
+    public ResponseEntity updateUserDetails(@ModelAttribute("user") UserProfileDto userProfileDto, Authentication auth) {
         try {
             userService.update(auth.getName(), userProfileDto);
             return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");
@@ -155,6 +155,17 @@ public class MainController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to update'}");
         }
     }
+
+    @PostMapping("/user/delete")
+	public ResponseEntity deleteUser(Authentication auth){
+		try{
+			User user = userRepository.findByEmail(auth.getName());
+			userRepository.delete(user);
+			return ResponseEntity.status(HttpStatus.OK).body("{'data':'User deleted Successfully'}");
+		}catch(Exception e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to delete'}");
+		}
+	}
 
 	@PostMapping("/user/savephoto")
 	public ResponseEntity saveUserPhoto(@RequestParam("image") MultipartFile multipartFile, Authentication auth) {

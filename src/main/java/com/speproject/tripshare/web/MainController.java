@@ -10,7 +10,6 @@ import com.speproject.tripshare.service.UserServiceImpl;
 import com.speproject.tripshare.web.dto.TripCreationDto;
 import com.speproject.tripshare.web.dto.TripScoreDto;
 import com.speproject.tripshare.web.dto.UserProfileDto;
-import com.speproject.tripshare.web.dto.UserRegistrationDto;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -23,8 +22,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -146,10 +152,34 @@ public class MainController {
             userService.update(auth.getName(), userProfileDto);
             return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");
         }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Unable to update'}");
-//			return "redirect:/registration?success";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to update'}");
         }
     }
+
+	@PostMapping("/user/savephoto")
+	public ResponseEntity saveUserPhoto(@RequestParam("image") MultipartFile multipartFile, Authentication auth) {
+		try {
+			User user = userRepository.findByEmail(auth.getName());
+			String fileName = user.getFirstName() + user.getId() + StringUtils.cleanPath(multipartFile.getOriginalFilename());
+			String uploadDir = "src/main/resources/imgs/userphotos/";
+
+			Path uploadPath = Paths.get(uploadDir);
+
+			if (!Files.exists(uploadPath)) {
+				Files.createDirectories(uploadPath);
+			}
+			InputStream inputStream = multipartFile.getInputStream();
+			Path filePath = uploadPath.resolve(fileName);
+			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+			user.setPhotoPath(fileName);
+			userRepository.save(user);
+			return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");
+
+		}catch(Exception e){
+			log.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to update'}");
+		}
+	}
 
 
 

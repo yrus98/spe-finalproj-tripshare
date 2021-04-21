@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService{
 		user.setDob(userProfileDto.getDob());
 		user.setGender(userProfileDto.getGender());
 		user.setDescription(userProfileDto.getDescription());
-		user.setPhotoPath(userProfileDto.getPhotoPath());
 
 		return userRepository.save(user);
 	}

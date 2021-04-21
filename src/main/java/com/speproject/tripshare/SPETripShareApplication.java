@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RegistrationLoginSpringBootSecurityThymeleafApplication {
+public class SPETripShareApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RegistrationLoginSpringBootSecurityThymeleafApplication.class, args);
+		SpringApplication.run(SPETripShareApplication.class, args);
 	}
 
 }

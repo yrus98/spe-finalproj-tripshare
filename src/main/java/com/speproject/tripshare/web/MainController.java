@@ -5,9 +5,12 @@ import com.speproject.tripshare.model.Trip;
 import com.speproject.tripshare.model.User;
 import com.speproject.tripshare.repository.UserRepository;
 import com.speproject.tripshare.service.TripService;
+import com.speproject.tripshare.service.UserService;
 import com.speproject.tripshare.service.UserServiceImpl;
 import com.speproject.tripshare.web.dto.TripCreationDto;
 import com.speproject.tripshare.web.dto.TripScoreDto;
+import com.speproject.tripshare.web.dto.UserProfileDto;
+import com.speproject.tripshare.web.dto.UserRegistrationDto;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -41,6 +44,9 @@ public class MainController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+    private UserService userService;
 
 	@GetMapping("/ts/login")
 	public String login() {
@@ -128,6 +134,24 @@ public class MainController {
 		}
 		return null;
 	}
+
+    @ModelAttribute("user")
+    public UserProfileDto userProfileDto() {
+        return new UserProfileDto();
+    }
+
+    @PostMapping("/user/updatedetails")
+    public ResponseEntity registerUserAccount(@ModelAttribute("user") UserProfileDto userProfileDto, Authentication auth) {
+        try {
+            userService.update(auth.getName(), userProfileDto);
+            return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Unable to update'}");
+//			return "redirect:/registration?success";
+        }
+    }
+
+
 
 
 

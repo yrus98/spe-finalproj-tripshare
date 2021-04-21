@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.speproject.tripshare.model.Role;
 import com.speproject.tripshare.model.User;
 import com.speproject.tripshare.repository.UserRepository;
+import com.speproject.tripshare.web.dto.UserProfileDto;
 import com.speproject.tripshare.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,20 @@ public class UserServiceImpl implements UserService{
 				registrationDto.getLastName(), registrationDto.getEmail(),
 				passwordEncoder.encode(registrationDto.getPassword()), new Role("ROLE_USER"));
 		
+		return userRepository.save(user);
+	}
+
+	@Override
+	public User update(String username, UserProfileDto userProfileDto) {
+		User user = userRepository.findByEmail(username);
+		user.setFirstName(userProfileDto.getFirstName());
+		user.setLastName(userProfileDto.getLastName());
+		user.setPassword(passwordEncoder.encode(userProfileDto.getPassword()));
+		user.setDob(userProfileDto.getDob());
+		user.setGender(userProfileDto.getGender());
+		user.setDescription(userProfileDto.getDescription());
+		user.setPhotoPath(userProfileDto.getPhotoPath());
+
 		return userRepository.save(user);
 	}
 

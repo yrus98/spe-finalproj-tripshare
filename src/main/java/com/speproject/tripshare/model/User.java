@@ -1,10 +1,7 @@
 package com.speproject.tripshare.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cascade;
-
-import java.util.Collection;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -36,6 +33,14 @@ public class User {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "role_id")
 	private Role role;
+
+	private Integer gender;
+
+	private Date dob;
+
+	private String description;
+
+	private String photoPath;
 	
 	public User() {
 		
@@ -49,6 +54,20 @@ public class User {
 		this.password = password;
 		this.role = role;
 	}
+
+	public User(String firstName, String lastName, String email, String password, Role role, Integer gender, Date dob, String description, String photoPath) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.role = role;
+		this.gender = gender;
+		this.dob = dob;
+		this.description = description;
+		this.photoPath = photoPath;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -98,5 +117,37 @@ public class User {
 
 	public void addTrip(Trip trip){
 		this.tripList.add(trip);
+	}
+
+	public Integer getGender() {
+		return gender;
+	}
+
+	public void setGender(Integer gender) {
+		this.gender = gender;
+	}
+
+	public Date getDob() {
+		return dob;
+	}
+
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPhotoPath() {
+		return photoPath;
+	}
+
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
 	}
 }

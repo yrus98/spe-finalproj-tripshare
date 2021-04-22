@@ -120,7 +120,7 @@ public class MainController {
 		log.info("UserResourceImpl : authenticate");
 		JSONObject jsonObject = new JSONObject();
 		try {
-			log.info(user.getEmail() + " : " + user.getPassword());
+//			log.info(user.getEmail() + " : " + user.getPassword());
 			Authentication authentication = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 			if (authentication.isAuthenticated()) {
@@ -147,7 +147,7 @@ public class MainController {
     }
 
     @PostMapping("/user/updatedetails")
-    public ResponseEntity updateUserDetails(@ModelAttribute("user") UserProfileDto userProfileDto, Authentication auth) {
+    public ResponseEntity updateUserDetails(@RequestBody UserProfileDto userProfileDto, Authentication auth) {
         try {
             userService.update(auth.getName(), userProfileDto);
             return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");

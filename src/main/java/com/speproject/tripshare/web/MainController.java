@@ -83,7 +83,7 @@ public class MainController {
 	}
 
 	@PostMapping("/user/createtrip")
-	public String submitCreateTrip(@ModelAttribute("trip") TripCreationDto tripCreationDto) {
+	public String submitCreateTrip(@RequestBody TripCreationDto tripCreationDto) {
 		Trip trip = tripService.save(tripCreationDto);
 		return "redirect:/user/matchtrips/" + trip.getTripId();
 	}

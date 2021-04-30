@@ -11,6 +11,7 @@ import com.speproject.tripshare.service.UserService;
 
 import javax.ws.rs.Consumes;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RequestMapping("/registration")
 public class UserRegistrationController {

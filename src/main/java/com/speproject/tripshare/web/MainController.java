@@ -83,9 +83,13 @@ public class MainController {
 	}
 
 	@PostMapping("/user/createtrip")
-	public String submitCreateTrip(@RequestBody TripCreationDto tripCreationDto) {
-		Trip trip = tripService.save(tripCreationDto);
-		return "redirect:/user/matchtrips/" + trip.getTripId();
+	public ResponseEntity submitCreateTrip(@RequestBody TripCreationDto tripCreationDto) {
+        try {
+            Trip trip = tripService.save(tripCreationDto);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Trip created Successfully\", \"tripId\":"+trip.getTripId()+"}");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to create trip\"}");
+        }
 	}
 
 	@GetMapping("/user/getdetails")
@@ -150,9 +154,9 @@ public class MainController {
     public ResponseEntity updateUserDetails(@RequestBody UserProfileDto userProfileDto, Authentication auth) {
         try {
             userService.update(auth.getName(), userProfileDto);
-            return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");
+            return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Updated Successfully\"}");
         }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to update'}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to update\"}");
         }
     }
 
@@ -161,9 +165,9 @@ public class MainController {
 		try{
 			User user = userRepository.findByEmail(auth.getName());
 			userRepository.delete(user);
-			return ResponseEntity.status(HttpStatus.OK).body("{'data':'User deleted Successfully'}");
+			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"User deleted Successfully\"}");
 		}catch(Exception e){
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to delete'}");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to delete\"}");
 		}
 	}
 
@@ -184,11 +188,11 @@ public class MainController {
 			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 			user.setPhotoPath(fileName);
 			userRepository.save(user);
-			return ResponseEntity.status(HttpStatus.OK).body("{'data':'Updated Successfully'}");
+			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Updated Successfully\"}");
 
 		}catch(Exception e){
 			log.error(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Failed to update'}");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to update\"}");
 		}
 	}
 

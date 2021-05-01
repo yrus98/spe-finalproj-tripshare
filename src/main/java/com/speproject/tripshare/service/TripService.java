@@ -12,4 +12,6 @@ public interface TripService {
 	Trip getTripByTripId(Long tripId);
 
 	List<TripScoreDto> matchUserTrips(Long tripId, int startCount, int resultCount);
+
+	Boolean deleteTrip(Trip trip);
 }

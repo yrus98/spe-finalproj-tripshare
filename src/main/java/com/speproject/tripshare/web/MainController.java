@@ -196,6 +196,18 @@ public class MainController {
 		}
 	}
 
+	@PostMapping("/user/deletetrip/{tripId}")
+	@ResponseBody
+	public ResponseEntity deleteUserTrip(@PathVariable Long tripId, Authentication auth){
+		try {
+			Trip trip = tripService.getTripByTripId(tripId);
+			if(!trip.getUser().getEmail().equals(auth.getName()) || !tripService.deleteTrip(trip))
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"User Not allowed\"}");
+			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Trip deleted Successfully\"}");
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to delete\"}");
+		}
+	}
 
 
 

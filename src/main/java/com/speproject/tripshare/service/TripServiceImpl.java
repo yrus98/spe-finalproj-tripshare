@@ -84,7 +84,18 @@ public class TripServiceImpl implements TripService{
 		return tripsWithScores;
 	}
 
-	float matchScore(Trip userTrip, Trip otherTrip){
+    @Override
+    public Boolean deleteTrip(Trip trip) {
+        try {
+			tripRepository.delete(trip);
+			return true;
+		}catch(Exception e){
+        	return false;
+		}
+
+    }
+
+    float matchScore(Trip userTrip, Trip otherTrip){
 		float score = 0f, s;
 		float slopeLandscape = 0.5f, slopeDate=0.2f, slopeTripLength=0.4f, slopeBudget = 0.001f, slopeAgeGroup = 2f;
 		float wLandscape = 0.8f, wDate = 0.7f, wTripLength = 0.5f, wBudget = 0.9f, wAge = 0.5f, wGender = 0.6f;

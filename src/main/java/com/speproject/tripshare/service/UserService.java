@@ -9,4 +9,7 @@ public interface UserService extends UserDetailsService{
 	User save(UserRegistrationDto registrationDto);
 
 	User update(String username, UserProfileDto userProfileDto);
+
+	User getUserFromId(Long id);
+
 }

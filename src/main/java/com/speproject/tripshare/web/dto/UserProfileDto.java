@@ -1,5 +1,7 @@
 package com.speproject.tripshare.web.dto;
 
+import com.speproject.tripshare.model.User;
+
 import java.sql.Date;
 
 public class UserProfileDto {
@@ -10,6 +12,7 @@ public class UserProfileDto {
 	private Integer gender;
 	private Date dob;
 	private String description;
+	private String photoPath;
 
 	public UserProfileDto(){
 
@@ -24,7 +27,21 @@ public class UserProfileDto {
 		this.gender = gender;
 		this.dob = dob;
 		this.description = description;
+		this.photoPath = "";
 	}
+
+	public UserProfileDto(User user){
+		super();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.email = user.getEmail();
+		this.password = "";
+		this.gender = user.getGender();
+		this.dob = user.getDob();
+		this.description = user.getDescription();
+		this.photoPath = user.getPhotoPath();
+	}
+
 
 	public String getFirstName() {
 		return firstName;
@@ -75,4 +92,11 @@ public class UserProfileDto {
 		this.description = description;
 	}
 
+	public String getPhotoPath() {
+		return photoPath;
+	}
+
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
+	}
 }

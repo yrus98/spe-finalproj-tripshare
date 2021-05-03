@@ -2,6 +2,7 @@ package com.speproject.tripshare.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import com.speproject.tripshare.model.Role;
 import com.speproject.tripshare.model.User;
@@ -51,7 +52,12 @@ public class UserServiceImpl implements UserService{
 		return userRepository.save(user);
 	}
 
-	@Override
+    @Override
+    public User getUserFromId(Long id) {
+		return userRepository.findById(id).orElse(null);
+	}
+
+    @Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		User user = userRepository.findByEmail(username);

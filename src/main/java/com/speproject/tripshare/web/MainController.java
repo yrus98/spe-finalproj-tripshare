@@ -1,12 +1,16 @@
 package com.speproject.tripshare.web;
 
 import com.speproject.tripshare.config.JwtTokenProvider;
+import com.speproject.tripshare.model.ChatMessage;
 import com.speproject.tripshare.model.Trip;
 import com.speproject.tripshare.model.User;
+import com.speproject.tripshare.repository.ChatMessageRepository;
 import com.speproject.tripshare.repository.UserRepository;
+import com.speproject.tripshare.service.ChatMessageService;
 import com.speproject.tripshare.service.TripService;
 import com.speproject.tripshare.service.UserService;
 import com.speproject.tripshare.service.UserServiceImpl;
+import com.speproject.tripshare.web.dto.ChatMessageDto;
 import com.speproject.tripshare.web.dto.TripCreationDto;
 import com.speproject.tripshare.web.dto.TripScoreDto;
 import com.speproject.tripshare.web.dto.UserProfileDto;
@@ -53,6 +57,12 @@ public class MainController {
 
 	@Autowired
     private UserService userService;
+
+	@Autowired
+	private ChatMessageService chatMessageService;
+
+	@Autowired
+	private ChatMessageRepository chatMessageRepository;
 
 	@GetMapping("/ts/login")
 	public String login() {
@@ -210,6 +220,32 @@ public class MainController {
 	}
 
 
+	@PostMapping("/user/savemessage")
+	@ResponseBody
+	public ResponseEntity saveMessage(@RequestBody ChatMessageDto chatMessageDto){
+		try {
+			chatMessageService.save(chatMessageDto);
+			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Message saved successfully\"}");
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to save\"}");
+		}
+	}
 
+	@GetMapping("/user/getchatslist")
+	@ResponseBody
+	public List<UserProfileDto> getAllMessages(Authentication auth){
+		User user = userRepository.findByEmail(auth.getName());
+		return chatMessageService.getOngoingChatUsersList(user);
+	}
+
+	@GetMapping("/user/getchats/{otherUserId}")
+	@ResponseBody
+	public List<ChatMessage> getAllChatsWithUser(@PathVariable Long otherUserId, Authentication auth){
+		User user = userRepository.findByEmail(auth.getName());
+		User otherUser = userService.getUserFromId(otherUserId);
+		if(otherUser == null)
+			return null;
+		return chatMessageService.getChatsBetweenUsers(user, otherUser);
+	}
 
 }

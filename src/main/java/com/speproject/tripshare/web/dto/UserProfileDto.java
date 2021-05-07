@@ -108,4 +108,21 @@ public class UserProfileDto {
 	public void setPhotoPath(String photoPath) {
 		this.photoPath = photoPath;
 	}
+
+	@Override
+	public boolean equals(Object other){
+		if (other == this) {
+			return true;
+		}
+
+		if (!(other instanceof UserProfileDto)) {
+			return false;
+		}
+		return this.id.equals(((UserProfileDto) other).id);
+	}
+
+	@Override
+	public int hashCode(){
+		return this.email.hashCode();
+	}
 }

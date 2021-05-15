@@ -37,7 +37,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @Controller
 public class MainController {
 
@@ -56,7 +56,7 @@ public class MainController {
 	private UserRepository userRepository;
 
 	@Autowired
-    private UserService userService;
+	private UserService userService;
 
 	@Autowired
 	private ChatMessageService chatMessageService;
@@ -68,7 +68,7 @@ public class MainController {
 	public String login() {
 		return "login";
 	}
-	
+
 	@GetMapping("/")
 	public String home() {
 		return "index";
@@ -76,7 +76,7 @@ public class MainController {
 
 	@GetMapping("/rr")
 	@ResponseBody
-	public String rtest(Authentication auth){
+	public String rtest(Authentication auth) {
 //		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return auth.getName() + auth.getAuthorities() + auth.getCredentials();
 	}
@@ -88,23 +88,23 @@ public class MainController {
 
 
 	@GetMapping("/user/createtrip")
-	public String createTripForm(){
+	public String createTripForm() {
 		return "createtrip";
 	}
 
 	@PostMapping("/user/createtrip")
 	public ResponseEntity submitCreateTrip(@RequestBody TripCreationDto tripCreationDto) {
-        try {
-            Trip trip = tripService.save(tripCreationDto);
-            return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Trip created Successfully\", \"tripId\":"+trip.getTripId()+"}");
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to create trip\"}");
-        }
+		try {
+			Trip trip = tripService.save(tripCreationDto);
+			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Trip created Successfully\", \"tripId\":" + trip.getTripId() + "}");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to create trip\"}");
+		}
 	}
 
 	@GetMapping("/user/getdetails")
 	@ResponseBody
-	public User getUserDetails(Authentication auth){
+	public User getUserDetails(Authentication auth) {
 
 		User user = userRepository.findByEmail(auth.getName());
 		user.setPassword("");
@@ -113,7 +113,7 @@ public class MainController {
 
 	@GetMapping("/user/gettrips")
 	@ResponseBody
-	public List<Trip> getUserTrips(Authentication auth){
+	public List<Trip> getUserTrips(Authentication auth) {
 		User user = userRepository.findByEmail(auth.getName());
 
 		return user.getTripList();
@@ -121,9 +121,9 @@ public class MainController {
 
 	@GetMapping("/user/matchtrips/{tripId}")
 	@ResponseBody
-	public List<TripScoreDto> matchUserTrips(@PathVariable Long tripId, Authentication auth){
+	public List<TripScoreDto> matchUserTrips(@PathVariable Long tripId, Authentication auth) {
 		Trip trip = tripService.getTripByTripId(tripId);
-		if(!trip.getUser().getEmail().equals(auth.getName()))
+		if (!trip.getUser().getEmail().equals(auth.getName()))
 			return null;
 		return tripService.matchUserTrips(tripId, 0, 10);
 	}
@@ -136,7 +136,7 @@ public class MainController {
 		try {
 //			log.info(user.getEmail() + " : " + user.getPassword());
 			Authentication authentication = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+			                                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 			if (authentication.isAuthenticated()) {
 				String email = user.getEmail();
 				jsonObject.put("name", authentication.getName());
@@ -155,28 +155,28 @@ public class MainController {
 		return null;
 	}
 
-    @ModelAttribute("user")
-    public UserProfileDto userProfileDto() {
-        return new UserProfileDto();
-    }
+	@ModelAttribute("user")
+	public UserProfileDto userProfileDto() {
+		return new UserProfileDto();
+	}
 
-    @PostMapping("/user/updatedetails")
-    public ResponseEntity updateUserDetails(@RequestBody UserProfileDto userProfileDto, Authentication auth) {
-        try {
-            userService.update(auth.getName(), userProfileDto);
-            return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Updated Successfully\"}");
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to update\"}");
-        }
-    }
+	@PostMapping("/user/updatedetails")
+	public ResponseEntity updateUserDetails(@RequestBody UserProfileDto userProfileDto, Authentication auth) {
+		try {
+			userService.update(auth.getName(), userProfileDto);
+			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Updated Successfully\"}");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to update\"}");
+		}
+	}
 
-    @PostMapping("/user/delete")
-	public ResponseEntity deleteUser(Authentication auth){
-		try{
+	@PostMapping("/user/delete")
+	public ResponseEntity deleteUser(Authentication auth) {
+		try {
 			User user = userRepository.findByEmail(auth.getName());
 			userRepository.delete(user);
 			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"User deleted Successfully\"}");
-		}catch(Exception e){
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to delete\"}");
 		}
 	}
@@ -200,7 +200,7 @@ public class MainController {
 			userRepository.save(user);
 			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Updated Successfully\"}");
 
-		}catch(Exception e){
+		} catch (Exception e) {
 			log.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to update\"}");
 		}
@@ -208,13 +208,13 @@ public class MainController {
 
 	@PostMapping("/user/deletetrip/{tripId}")
 	@ResponseBody
-	public ResponseEntity deleteUserTrip(@PathVariable Long tripId, Authentication auth){
+	public ResponseEntity deleteUserTrip(@PathVariable Long tripId, Authentication auth) {
 		try {
 			Trip trip = tripService.getTripByTripId(tripId);
-			if(!trip.getUser().getEmail().equals(auth.getName()) || !tripService.deleteTrip(trip))
+			if (!trip.getUser().getEmail().equals(auth.getName()) || !tripService.deleteTrip(trip))
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"User Not allowed\"}");
 			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Trip deleted Successfully\"}");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to delete\"}");
 		}
 	}
@@ -222,28 +222,28 @@ public class MainController {
 
 	@PostMapping("/user/savemessage")
 	@ResponseBody
-	public ResponseEntity saveMessage(@RequestBody ChatMessageDto chatMessageDto){
+	public ResponseEntity saveMessage(@RequestBody ChatMessageDto chatMessageDto) {
 		try {
 			chatMessageService.save(chatMessageDto);
 			return ResponseEntity.status(HttpStatus.OK).body("{\"data\":\"Message saved successfully\"}");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"data\":\"Failed to save\"}");
 		}
 	}
 
 	@GetMapping("/user/getchatslist")
 	@ResponseBody
-	public List<UserProfileDto> getAllMessages(Authentication auth){
+	public List<UserProfileDto> getAllMessages(Authentication auth) {
 		User user = userRepository.findByEmail(auth.getName());
 		return chatMessageService.getOngoingChatUsersList(user);
 	}
 
 	@GetMapping("/user/getchats/{otherUserId}")
 	@ResponseBody
-	public List<ChatMessage> getAllChatsWithUser(@PathVariable Long otherUserId, Authentication auth){
+	public List<ChatMessage> getAllChatsWithUser(@PathVariable Long otherUserId, Authentication auth) {
 		User user = userRepository.findByEmail(auth.getName());
 		User otherUser = userService.getUserFromId(otherUserId);
-		if(otherUser == null)
+		if (otherUser == null)
 			return null;
 		return chatMessageService.getChatsBetweenUsers(user, otherUser);
 	}

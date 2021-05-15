@@ -11,7 +11,7 @@ import com.speproject.tripshare.service.UserService;
 
 import javax.ws.rs.Consumes;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @Controller
 @RequestMapping("/registration")
 public class UserRegistrationController {
@@ -22,12 +22,12 @@ public class UserRegistrationController {
 		super();
 		this.userService = userService;
 	}
-	
+
 	@ModelAttribute("user")
-    public UserRegistrationDto userRegistrationDto() {
-        return new UserRegistrationDto();
-    }
-	
+	public UserRegistrationDto userRegistrationDto() {
+		return new UserRegistrationDto();
+	}
+
 	@GetMapping
 	public String showRegistrationForm() {
 		return "registration";
@@ -38,7 +38,7 @@ public class UserRegistrationController {
 		try {
 			userService.save(registrationDto);
 			return ResponseEntity.status(HttpStatus.OK).body("{'data':'Registered Successfully'}");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'data':'Email already in use'}");
 //			return "redirect:/registration?success";
 		}
